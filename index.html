@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Image Demo</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        #map {
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<button id="button1">Change Rectangle 1</button>
+<button id="button2">Change Rectangle 2</button>
+<script>
+  // Initialize the map
+  var map = L.map('map', {
+    minZoom: -10,
+    maxZoom: 10,
+    crs: L.CRS.Simple
+  }).setView([0, 0], 1);
+
+  // Set the image bounds and add the image to the map
+  var imageUrl = 'image.png';
+  var imageBounds = [[0, 0], [360, 480]]; // Set the bounds according to the image size (480x360)
+  L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+  // Add a rectangle to highlight a specific area on the image
+  var rectangleBounds = [[0, 0], [0, 0]];
+  var rectangle = L.rectangle(rectangleBounds, {color: "#ff7800", weight: 5}).addTo(map);
+
+  // Fit the map view to the image
+  map.fitBounds(imageBounds);
+
+  // Change the rectangle bounds when the buttons are clicked
+  document.getElementById('button1').addEventListener('click', function() {
+    var newRectangleBounds = [[100, 100], [300, 500]];
+    rectangle.setBounds(newRectangleBounds);
+  });
+
+  document.getElementById('button2').addEventListener('click', function() {
+    var newRectangleBounds = [[200, 200], [400, 400]];
+    rectangle.setBounds(newRectangleBounds);
+  });
+
+</script>
+</body>
+</html>

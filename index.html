@@ -1,56 +1,120 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Leaflet Image Demo</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        #map {
-            height: 500px;
-        }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      #map {
+        height: 500px;
+      }
     </style>
-</head>
-<body>
-<div id="map"></div>
-<button id="button1">Change Rectangle 1</button>
-<button id="button2">Change Rectangle 2</button>
-<script>
-  // Initialize the map
-  var map = L.map('map', {
-    minZoom: -10,
-    maxZoom: 10,
-    crs: L.CRS.Simple
-  }).setView([0, 0], 1);
+  </head>
+  <body>
+    <div id="map"></div>
+    <button id="button1">ポイント1表示</button>
+    <button id="button2">ポイント2表示</button>
+    <button id="editButton1">編集</button>
+    <button id="saveButton1">1に保存</button>
+    <button id="saveButton2">2に保存</button>
+    <script>
+      // Initialize the map
+      var map = L.map("map", {
+        minZoom: -10,
+        maxZoom: 10,
+        crs: L.CRS.Simple,
+      }).setView([0, 0], 1);
 
-  // Set the image bounds and add the image to the map
-  var imageUrl = 'image.png';
-  var imageBounds = [[0, 0], [360, 480]]; // Set the bounds according to the image size (480x360)
-  L.imageOverlay(imageUrl, imageBounds).addTo(map);
+      // Set the image bounds and add the image to the map
+      var imageUrl = "image.png";
+      var imageBounds = [
+        [0, 0],
+        [360, 480],
+      ]; // Set the bounds according to the image size (480x360)
+      L.imageOverlay(imageUrl, imageBounds).addTo(map);
 
-  // Add a rectangle to highlight a specific area on the image
-  var rectangleBounds = [[0, 0], [0, 0]];
-  var rectangle = L.rectangle(rectangleBounds, {color: "#ff7800", weight: 5}).addTo(map);
+      // Add a rectangle to highlight a specific area on the image
+      var rectangleBounds = [
+        [0, 0],
+        [0, 0],
+      ];
+      var rectangle = L.rectangle(rectangleBounds, {
+        color: "#ff7800",
+        weight: 5,
+      }).addTo(map);
 
-  // Fit the map view to the image
-  map.fitBounds(imageBounds);
+      // Fit the map view to the image
+      map.fitBounds(imageBounds);
 
-  // Change the rectangle bounds when the buttons are clicked
-  document.getElementById('button1').addEventListener('click', function() {
-    var newRectangleBounds = [[100, 100], [300, 500]];
-    rectangle.setBounds(newRectangleBounds);
-  });
+      // Default coordinates for Change Rectangle 1 and 2
+      var defaultRectangle1Bounds = [
+        [308, 369],
+        [210, 55],
+      ];
+      var defaultRectangle2Bounds = [
+        [128, 310],
+        [86, 190],
+      ];
 
-  document.getElementById('button2').addEventListener('click', function() {
-    var newRectangleBounds = [[200, 200], [400, 400]];
-    rectangle.setBounds(newRectangleBounds);
-  });
+      // Function to change the rectangle bounds
+      function changeRectangleBounds(newBounds) {
+        rectangle.setBounds(newBounds);
+      }
 
-</script>
-</body>
+      // Change the rectangle bounds when the buttons are clicked
+      document.getElementById("button1").addEventListener("click", function () {
+        changeRectangleBounds(defaultRectangle1Bounds);
+      });
+
+      document.getElementById("button2").addEventListener("click", function () {
+        changeRectangleBounds(defaultRectangle2Bounds);
+      });
+
+      // Enable or disable click and drag functionality for the rectangle
+      var editingEnabled = false;
+      document
+        .getElementById("editButton1")
+        .addEventListener("click", function () {
+          editingEnabled = !editingEnabled;
+          if (editingEnabled) {
+            rectangle.editing.enable();
+          } else {
+            rectangle.editing.disable();
+          }
+        });
+
+      // Save the current rectangle bounds for button 1
+      document
+        .getElementById("saveButton1")
+        .addEventListener("click", function () {
+          defaultRectangle1Bounds = rectangle.getBounds();
+          console.log(rectangle.getBounds());
+          rectangle.editing.disable();
+        });
+
+      // Save the current rectangle bounds for button 2
+      document
+        .getElementById("saveButton2")
+        .addEventListener("click", function () {
+          defaultRectangle2Bounds = rectangle.getBounds();
+          console.log(rectangle.getBounds());
+          rectangle.editing.disable();
+        });
+    </script>
+  </body>
 </html>
